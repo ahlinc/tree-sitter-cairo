@@ -19,10 +19,10 @@ enum Context {
 
 enum PythonStringType {
   PST_NONE,
-  PST_1_SQ_STRING,
-  PST_3_SQ_STRING,
-  PST_1_DQ_STRING,
-  PST_3_DQ_STRING,
+  PST_1S_STRING,
+  PST_1D_STRING,
+  PST_3S_STRING,
+  PST_3D_STRING,
 };
 
 #ifdef TREE_SITTER_INTERNAL_BUILD
@@ -148,7 +148,7 @@ bool scan(State *state, TSLexer *lexer, const bool *symbols) {
         content_len++;
         if (IN_CONTEXT(C_PYTHON_STRING)) {
           unsigned iter =
-              IS_PST(PST_1_DQ_STRING) || IS_PST(PST_1_SQ_STRING) ? 0 : 2;
+              IS_PST(PST_1D_STRING) || IS_PST(PST_1S_STRING) ? 0 : 2;
           if (iter > 0)
             do {
               if (PEEK != ch) {
@@ -170,12 +170,12 @@ bool scan(State *state, TSLexer *lexer, const bool *symbols) {
               S_ADVANCE;
               content_len++;
               SET_CONTEXT(C_PYTHON_STRING);
-              SET_PST(ch == '"' ? PST_3_DQ_STRING : PST_3_SQ_STRING);
+              SET_PST(ch == '"' ? PST_3D_STRING : PST_3S_STRING);
             } else
               return false;
           } else {
             SET_CONTEXT(C_PYTHON_STRING);
-            SET_PST(ch == '"' ? PST_1_DQ_STRING : PST_1_SQ_STRING);
+            SET_PST(ch == '"' ? PST_1D_STRING : PST_1S_STRING);
           }
         }
         continue;
